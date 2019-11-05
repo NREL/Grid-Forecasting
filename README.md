@@ -33,17 +33,19 @@ The application to forecast GHI data
     ```
 
 1.  Add the following to the gridappsd-docker/docker-compose.yml file
-
-    ```` yaml
-      solar_forecast:
-        image: solar-forecast-app
-        ports:
-          - 9000:9000
-        environment:
-          GRIDAPPSD_URI: tcp://gridappsd:61613
-        depends_on:
-          - gridappsd
-    ````
+Add 9003 to the ports in the docker-compose.yml allows for data to be sent to the bokeh streaming tool. 
+```yaml
+  grid_forecasting:
+    image: grid-forecasting-app
+    ports:
+      - 9003:9003
+    environment:
+      GRIDAPPSD_URI: tcp://gridappsd:61613
+    depends_on:
+      - gridappsd
+    volumes:
+      - $HOME/git/adms/Grid-Forecasting-Public:/usr/src/gridappsd-grid-forecasting
+```
 
 1.  Run the docker application 
 
@@ -58,21 +60,3 @@ The application to forecast GHI data
     ````
 
 Next to start the application through the viz follow the directions here: https://gridappsd.readthedocs.io/en/latest/using_gridappsd/index.html#start-gridapps-d-platform
-
-
-Docker
-
-Two notes to use inside a docker container:
-1. Add 9000 to the ports in the gridappsd-docker/docker-compose.yml like this:
-  sample_app:
-    image: sample-app
-    ports:
-      - 9000:9000
-    environment:
-      GRIDAPPSD_URI: tcp://gridappsd:61613
-  #    GRIDAPPSD_USER: system
-  #    GRIDAPPSD_PASS: manager
-    depends_on:
-      - gridappsd
-
-2. Change  skt.bind('tcp://127.0.0.1:9000') to skt.bind('tcp://*:9000')
